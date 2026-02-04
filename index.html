@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Selaelo ❤️ My Valentine</title>
+<style>
+:root{
+  --pink:#ff6fb1;
+  --purple:#7b4cff;
+  --soft:#fff0f7;
+  --text:#3a0b2e;
+}
+*{box-sizing:border-box;font-family:'Segoe UI',sans-serif;margin:0;padding:0;}
+body{min-height:100vh;background:radial-gradient(circle at top, #fff0f7, #ffe0ee 70%);color: var(--text);overflow-x:hidden;position:relative;}
+header{text-align:center;padding:50px 16px;}
+header h1{font-size:clamp(28px,6vw,48px);color:var(--pink);}
+header p{max-width:700px;margin:16px auto;font-size:clamp(14px,3vw,18px);line-height:1.5;}
+.card{max-width:900px;margin:20px auto;background: rgba(255,255,255,0.8);backdrop-filter: blur(12px);border-radius: 24px;padding:30px;border: 2px solid rgba(255,111,177,0.3);box-shadow:0 20px 60px rgba(255,123,191,0.2);transition: transform 0.3s ease;}
+.card:hover{transform:translateY(-4px);}
+.hidden{display:none;}
+.question{margin:25px 0;}
+.question h3{font-size:clamp(16px,4vw,22px);}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;}
+button{border:none;padding:12px 22px;border-radius:999px;font-size:16px;font-weight:700;cursor:pointer;transition:0.3s;}
+button:hover{transform:scale(1.05);}
+.yes{background: linear-gradient(135deg, #ff7bbf, #9d4edd); color:white; box-shadow:0 0 20px rgba(255,123,191,.6);}
+.no{background:#ffd6e3; color:#8a2457; box-shadow:0 0 15px rgba(255,46,99,0.3);}
+.reaction{min-height:120px;font-size:70px;text-align:center;margin-top:12px;}
+.fingerprint{width:120px;height:120px;margin:30px auto;border-radius:50%;background: radial-gradient(circle, #ffe0ee, #ff6fb1);display:flex;align-items:center;justify-content:center;font-size:40px;cursor:pointer;box-shadow:0 0 30px rgba(255,111,177,.6);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.08);}100%{transform:scale(1);}}
+.scanning{animation:scan 1s infinite;}
+@keyframes scan{0%{box-shadow:0 0 10px #ff6fb1;}50%{box-shadow:0 0 40px #7b4cff;}100%{box-shadow:0 0 10px #ff6fb1;}}
+.floating span{position:fixed;font-size:20px;animation:rise linear forwards;opacity:.8;}
+@keyframes rise{0%{transform:translateY(100vh);opacity:0;}20%{opacity:1;}100%{transform:translateY(-120vh);opacity:0;}}
+.slideshow{display:none;text-align:center;margin-top:20px;}
+.slide{display:none;text-align:center;}
+.slide img{width:100%;max-width:400px;border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,0.2);}
+.caption{margin-top:10px;font-size:16px;color:var(--text);font-style:italic;}
+.confetti{position:fixed;width:10px;height:10px;background:var(--pink);pointer-events:none;opacity:0.8;border-radius:50%;animation:confettiFall linear forwards;}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);}100%{transform:translateY(100vh) rotate(360deg);}}
+canvas{border-radius:20px;display:block;margin:20px auto;}
+</style>
+</head>
+<body>
+
+<header>
+<h1>Selaelo 💗 Will You Be My Valentine?</h1>
+<p>Every answer from your heart matters. Let’s take this moment to truly connect.</p>
+</header>
+
+<!-- Questions -->
+<section class="card" id="questions">
+<div class="question">
+<h3>1) Do you feel loved when we’re together?</h3>
+<div class="actions">
+<button class="yes">Yes</button>
+<button class="no">No</button>
+</div>
+<div class="reaction"></div>
+</div>
+<div class="question">
+<h3>2) Can I be your support through life’s challenges?</h3>
+<div class="actions">
+<button class="yes">Yes</button>
+<button class="no">No</button>
+</div>
+<div class="reaction"></div>
+</div>
+<div class="question">
+<h3>3) Do you believe our bond is deep and meaningful?</h3>
+<div class="actions">
+<button class="yes">Yes</button>
+<button class="no">No</button>
+</div>
+<div class="reaction"></div>
+</div>
+<div class="question">
+<h3>4) Will you allow me to bring joy and comfort into your life?</h3>
+<div class="actions">
+<button class="yes">Yes</button>
+<button class="no">No</button>
+</div>
+<div class="reaction"></div>
+</div>
+<div class="question">
+<h3>5) Can we promise to care for each other daily?</h3>
+<div class="actions">
+<button class="yes">Yes</button>
+<button class="no">No</button>
+</div>
+<div class="reaction"></div>
+</div>
+<div class="question">
+<h3>6) Selaelo… will you be my Valentine?</h3>
+<div class="actions">
+<button class="yes" id="finalYes">Yes</button>
+<button class="no">No</button>
+</div>
+<div class="reaction"></div>
+</div>
+</section>
+
+<!-- Fingerprint -->
+<section class="card" id="fingerprintSection">
+<h2 style="text-align:center;color:#ff6fb1;">One Last Step</h2>
+<p style="text-align:center;">Place your finger below to seal our commitment</p>
+<div id="fingerprint" class="fingerprint"><span>👆</span></div>
+<p id="scanText" style="text-align:center;margin-top:10px;">Tap and hold</p>
+</section>
+
+<!-- Photo Capture / Upload -->
+<section class="card hidden" id="photoSection">
+<h2 style="text-align:center;color:#ff6fb1;">Capture or Upload a Photo 📸</h2>
+<p style="text-align:center;">Take a photo or upload one to remember this moment</p>
+<video id="video" width="320" height="240" autoplay></video>
+<canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+<div style="text-align:center;margin:10px 0;">
+<input type="file" id="uploadPhoto" accept="image/*">
+</div>
+<div style="text-align:center;">
+<button id="snapBtn">📸 Take Photo</button>
+<button id="downloadPhotoBtn" style="display:none;">💾 Download Photo</button>
+</div>
+</section>
+
+<!-- Memories Slideshow -->
+<section class="card hidden" id="slideshowSection">
+<h2 style="text-align:center;color:#ff6fb1;">Memories 🌸</h2>
+<div class="slideshow" id="slideshow">
+<div class="slide"><img src="memory1.jpg" alt="Memory 1"><p class="caption">Our first sunset together</p></div>
+<div class="slide"><img src="memory2.jpg" alt="Memory 2"><p class="caption">Laughing in the rain on that weekend</p></div>
+<div class="slide"><img src="memory3.jpg" alt="Memory 3"><p class="caption">Celebrating our first anniversary</p></div>
+</div>
+</section>
+
+<footer style="text-align:center;padding:24px;">Made with love ❤️</footer>
+<div class="floating" id="floating"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+// Floating romantic texts
+const floating = document.getElementById('floating');
+const messages = [
+  "I love you","You make me happy","Forever us","My heart is yours",
+  "Together always","You're my sunshine","Always choosing you","You complete me"
+];
+setInterval(()=>{
+  const s = document.createElement('span');
+  s.textContent = messages[Math.floor(Math.random()*messages.length)];
+  s.style.left = Math.random()*100+'vw';
+  s.style.fontSize = (14 + Math.random()*10)+'px';
+  s.style.color = 'rgba(255,111,177,0.8)';
+  s.style.whiteSpace='nowrap';
+  s.style.animation = `rise ${(6 + Math.random()*6)}s linear forwards`;
+  floating.appendChild(s);
+  setTimeout(()=>s.remove(),12000);
+},500);
+
+// Questions interaction
+document.querySelectorAll('.question').forEach(q=>{
+  const yes = q.querySelector('.yes');
+  const no = q.querySelector('.no');
+  const reaction = q.querySelector('.reaction');
+  yes.addEventListener('click', ()=>{ reaction.innerHTML = '💖'; });
+  no.addEventListener('mouseover', ()=>{ no.style.position='relative'; no.style.left=(Math.random()*120-60)+'px'; });
+  no.addEventListener('click', ()=>{ reaction.innerHTML = '💔'; });
+});
+
+// Final Yes triggers fingerprint & photo
+document.getElementById('finalYes').addEventListener('click', ()=>{
+  document.getElementById('fingerprintSection').scrollIntoView({behavior:'smooth'});
+  document.getElementById('photoSection').classList.remove('hidden');
+});
+
+// Fingerprint scan
+const finger = document.getElementById('fingerprint');
+const text = document.getElementById('scanText');
+let timer;
+finger.addEventListener('mousedown', startScan);
+finger.addEventListener('touchstart', startScan);
+finger.addEventListener('mouseup', stopScan);
+finger.addEventListener('mouseleave', stopScan);
+finger.addEventListener('touchend', stopScan);
+
+function startScan(){
+  text.textContent = "Scanning fingerprint…";
+  finger.classList.add('scanning');
+  timer=setTimeout(()=>{
+    text.textContent = "Scan complete ✅";
+    launchConfetti();
+    document.getElementById('slideshowSection').classList.remove('hidden');
+    startSlideshow();
+  },2000);
+}
+function stopScan(){clearTimeout(timer);finger.classList.remove('scanning');}
+
+// Confetti
+function launchConfetti(){
+  for(let i=0;i<60;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=['#ff6fb1','#ff2e63','#7b4cff','#ffd6e3'][Math.floor(Math.random()*4)];
+    c.style.width=c.style.height=(5+Math.random()*10)+'px';
+    c.style.animationDuration=(2+Math.random()*2)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4000);
+  }
+}
+
+// Camera + Upload
+const video=document.getElementById('video');
+const canvas=document.getElementById('canvas');
+const snapBtn=document.getElementById('snapBtn');
+const downloadBtn=document.getElementById('downloadPhotoBtn');
+const uploadInput=document.getElementById('uploadPhoto');
+
+navigator.mediaDevices.getUserMedia({video:true}).then(stream=>{video.srcObject=stream;}).catch(err=>console.error(err));
+snapBtn.addEventListener('click',()=>{
+  canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);
+  canvas.style.display='block'; downloadBtn.style.display='inline-block';
+  launchConfetti();
+});
+downloadBtn.addEventListener('click',()=>{
+  const link=document.createElement('a');
+  link.href=canvas.toDataURL('image/png');
+  link.download='valentine_photo.png';
+  link.click();
+});
+uploadInput.addEventListener('change',(e)=>{
+  const file=e.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    const img=new Image();
+    img.src=ev.target.result;
+    img.onload=()=>{canvas.width=img.width;canvas.height=img.height;canvas.getContext('2d').drawImage(img,0,0,img.width,img.height);canvas.style.display='block'; downloadBtn.style.display='inline-block';};
+  }
+  reader.readAsDataURL(file);
+});
+
+// Slideshow
+const slides=document.querySelectorAll('#slideshow .slide');
+let index=0;
+function startSlideshow(){
+  slides.forEach((s,i)=>s.style.display=i===0?'block':'none');
+  setInterval(()=>{
+    slides[index].style.display='none';
+    index=(index+1)%slides.length;
+    slides[index].style.display='block';
+  },3000);
+}
+</script>
+</body>
+</html>
